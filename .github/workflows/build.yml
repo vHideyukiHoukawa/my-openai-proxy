@@ -1,0 +1,28 @@
+name: build
+
+on: [push]
+
+env:
+  GOPATH: ${{ github.workspace }}/.go
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - name: Build for Linux
+        run: GOOS=linux GOARCH=amd64 go build -o my-openai-proxy
+      - name: Build for Windows
+        run: GOOS=windows GOARCH=amd64 go build -o my-openai-proxy.exe
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: |
+            my-openai-proxy
+            my-openai-proxy.exe
