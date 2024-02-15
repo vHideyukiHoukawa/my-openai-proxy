@@ -19,29 +19,32 @@ const (
 
 // Variables
 var (
-	port                  int                     // Port number to listen on
-	true_key              string                  // Real OpenAI API key
-	virtual_key_file_path string                  // File path for virtual OpenAI keys
-	virtualKeys           = make(map[string]bool) // Map to store virtual OpenAI keys
+	port               int                     // Port number to listen on
+	trueKey            string                  // Real OpenAI API key
+	virtualKeyFilePath string                  // File path for virtual OpenAI keys
+	virtualKeys        = make(map[string]bool) // Map to store virtual OpenAI keys
 )
 
 // init function to initialize command-line flags and read virtual API keys from a file
 func init() {
 	// Define command-line flags
-	flag.IntVar(&port, "port", 48080, "Listen port number")
-	flag.StringVar(&virtual_key_file_path, "virtual_key_file_path", "virtual_api_keys.txt", "A file containing virtual OpenAI keys")
+	flag.IntVar(&port, "port", 48080, "Port number to listen on")
+	flag.StringVar(&virtualKeyFilePath, "vkeys", "virtual_api_keys.txt", "File path for virtual OpenAI keys")
+
+	// Parse command-line flags
+	flag.Parse()
 
 	// Get the real OpenAI API key from the environment variables
-	true_key = os.Getenv(EVN_OPENAI_API_KEY)
-	if true_key == "" {
+	trueKey = os.Getenv(EVN_OPENAI_API_KEY)
+	if trueKey == "" {
 		log.Fatal(errors.New(EVN_OPENAI_API_KEY + " environment variable is not defined"))
 	}
 
 	// Log the loading of virtual API keys from a file
-	log.Printf("*** load virtual api keys from %s", virtual_key_file_path)
+	log.Printf("*** load virtual api keys from %s", virtualKeyFilePath)
 
 	// Read virtual API keys from the specified file
-	content, err := os.ReadFile(virtual_key_file_path)
+	content, err := os.ReadFile(virtualKeyFilePath)
 	if err != nil {
 		log.Fatal("Error reading file:", err)
 	}
@@ -72,7 +75,7 @@ func ReverseProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check if the key is a virtual key, if not, use the real key
 	if _, exists := virtualKeys[key]; exists {
-		key = true_key
+		key = trueKey
 	} else {
 		log.Printf("****** Warning: No virtual key found")
 	}
@@ -95,9 +98,6 @@ func ReverseProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 // main function to start the HTTP server
 func main() {
-	// Parse command-line flags
-	flag.Parse()
-
 	// Log the start of the server
 	log.Printf("*** start server: %v\n", port)
 
