@@ -25,15 +25,15 @@ var (
 	virtualKeys        = make(map[string]bool) // Map to store virtual OpenAI keys
 )
 
-// init function to initialize command-line flags and read virtual API keys from a file
+// init function to initialize command-line flags
 func init() {
 	// Define command-line flags
 	flag.IntVar(&port, "port", 48080, "Port number to listen on")
 	flag.StringVar(&virtualKeyFilePath, "vkeys", "virtual_api_keys.txt", "File path for virtual OpenAI keys")
+}
 
-	// Parse command-line flags
-	flag.Parse()
-
+// config function to get the real OpenAI API key from the environment variables and read virtual API keys from a file
+func config() {
 	// Get the real OpenAI API key from the environment variables
 	trueKey = os.Getenv(EVN_OPENAI_API_KEY)
 	if trueKey == "" {
@@ -98,6 +98,12 @@ func ReverseProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 // main function to start the HTTP server
 func main() {
+	// Parse command-line flags
+	flag.Parse()
+
+	// Configure varoius keys
+	config()
+
 	// Log the start of the server
 	log.Printf("*** start server: %v\n", port)
 
