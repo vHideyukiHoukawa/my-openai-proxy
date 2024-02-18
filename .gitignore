@@ -21,4 +21,4 @@
 go.work
 
 # Project specific
-virtual_api_keys*
+virtual-api-keys*

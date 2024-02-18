@@ -35,7 +35,7 @@ func init() {
 	// Define command-line flags
 	flag.IntVar(&port, "port", 48080, "Port number to listen on.")
 	flag.Int64Var(&accessCountLimit, "access-count-limit", -1, "Total access count limit. Use -1 for no limit.")
-	flag.StringVar(&virtualKeyFilePath, "vkeys", "virtual_api_keys.txt", "File path for virtual OpenAI keys")
+	flag.StringVar(&virtualKeyFilePath, "virtual-keys-file", "virtual-api-keys.txt", "Path to the file containing virtual OpenAI keys.\nEach key should be specified on a separate line.")
 
 	additionalHelp1 := `
 This program offers reverse proxy functionality to the OpenAI API server with additional features, including:
