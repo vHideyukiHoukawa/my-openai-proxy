@@ -26,8 +26,8 @@ var (
 	accessCounter      int64                   // Counter to track the total access count
 	mu                 sync.Mutex              // Mutex to synchronize accessCounter updates
 	realKey            string                  // Real OpenAI API key
-	virtualKeyFilePath string                  // File path for virtual OpenAI keys
-	virtualKeys        = make(map[string]bool) // Map to store virtual OpenAI keys
+	virtualKeyFilePath string                  // Path to the file containing virtual OpenAI API keys
+	virtualKeys        = make(map[string]bool) // Map to store virtual OpenAI API keys
 )
 
 // init function to initialize command-line flags
@@ -35,7 +35,7 @@ func init() {
 	// Define command-line flags
 	flag.IntVar(&port, "port", 48080, "Port number to listen on.")
 	flag.Int64Var(&accessCountLimit, "access-count-limit", -1, "Total access count limit. Use -1 for no limit.")
-	flag.StringVar(&virtualKeyFilePath, "virtual-keys-file", "virtual-api-keys.txt", "Path to the file containing virtual OpenAI keys.\nEach key should be specified on a separate line.")
+	flag.StringVar(&virtualKeyFilePath, "virtual-keys-file", "virtual-api-keys.txt", "Path to the file containing virtual OpenAI API keys.\nEach key should be specified on a separate line.")
 
 	additionalHelp1 := `
 This program offers reverse proxy functionality to the OpenAI API server with additional features, including:
@@ -62,7 +62,7 @@ func config() {
 	// Get the real OpenAI API key from the environment variables
 	realKey = os.Getenv(EVN_OPENAI_API_KEY)
 	if realKey == "" {
-		log.Fatal(errors.New(EVN_OPENAI_API_KEY + " environment variable is not defined. Please set a real OpenAI key for this"))
+		log.Fatal(errors.New(EVN_OPENAI_API_KEY + " environment variable is not defined. Please set a real OpenAI API key for this"))
 	}
 
 	// Log the loading of virtual API keys from a file
