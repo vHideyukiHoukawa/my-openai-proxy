@@ -93,8 +93,8 @@ func ReverseProxyHandler(w http.ResponseWriter, r *http.Request) {
 	mu.Unlock()
 
 	// Log information about the incoming request
-	// log.Printf("*** request No.%d from %s with auth: %s\n", count, r.RemoteAddr, r.Header.Get("Authorization"))
-	log.Printf("*** request No.%d from %s\n", count, r.RemoteAddr)
+	// log.Printf("*** No.%d request from client: %s with auth: %s\n", count, r.RemoteAddr, r.Header.Get("Authorization"))
+	log.Printf("*** No.%d request from client: %s\n", count, r.RemoteAddr)
 
 	// Check total access limit and return error if exceeded
 	if accessCountLimit != -1 && count > accessCountLimit {
@@ -133,7 +133,8 @@ func ReverseProxyHandler(w http.ResponseWriter, r *http.Request) {
 	proxy.ServeHTTP(w, r)
 
 	// Log information about the response headers
-	// log.Printf("*** response with header: %s\n", w.Header())
+	// log.Printf("*** No.%d response from API Server with header: %s\n", count, w.Header())
+	log.Printf("*** No.%d response from API Server\n", count)
 }
 
 // main function to start the HTTP server
