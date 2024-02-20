@@ -113,7 +113,7 @@ func ReverseProxyHandler(w http.ResponseWriter, r *http.Request) {
 		key = strings.TrimPrefix(authHeader, "Bearer ")
 	}
 
-	// Check if the key is a virtual key, if not, use the real key
+	// Check if the key is a virtual key; if it is, replace it with the real key
 	if _, exists := virtualKeys[key]; exists {
 		key = realKey
 	} else {
