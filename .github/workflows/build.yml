@@ -17,7 +17,7 @@ jobs:
           go-version-file: "go.mod"
           cache: false
       - name: Build for Linux
-        run: GOOS=linux GOARCH=amd64 go build -o my-openai-proxy
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o my-openai-proxy
       - name: Build for Windows
         run: GOOS=windows GOARCH=amd64 go build -o my-openai-proxy.exe
       - name: Upload artifacts
