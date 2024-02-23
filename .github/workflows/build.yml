@@ -2,28 +2,36 @@ name: build
 
 on: [push]
 
-env:
-  GOPATH: ${{ github.workspace }}/.go
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-os: [linux, darwin, windows]
+        go-arch: [amd64, arm64]
+        exclude:
+          - go-os: linux
+            go-arch: arm64
+          - go-os: windows
+            go-arch: arm64
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
           cache: false
-      - name: Build for Linux
-        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o my-openai-proxy
-      - name: Build for Windows
-        run: GOOS=windows GOARCH=amd64 go build -o my-openai-proxy.exe
-      - name: Upload artifacts
+
+      - name: Create _out directory
+        run: mkdir -p _out
+
+      - name: Build
+        run: CGO_ENABLED=0 GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o _out/my-openai-proxy${{ matrix.go-os == 'windows' && '.exe' || '' }}
+
+      - name: Compress and Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: binaries
-          path: |
-            my-openai-proxy
-            my-openai-proxy.exe
+          name: my-openai-proxy_${{ github.sha }}_${{ matrix.go-os }}_${{ matrix.go-arch }}${{ matrix.go-os == 'windows' && '.zip' || '.tar.gz' }}
+          path: _out
