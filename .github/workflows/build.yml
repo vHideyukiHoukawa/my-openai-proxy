@@ -33,5 +33,5 @@ jobs:
       - name: Compress and Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: my-openai-proxy_${{ github.sha }}_${{ matrix.go-os }}_${{ matrix.go-arch }}${{ matrix.go-os == 'windows' && '.zip' || '.tar.gz' }}
+          name: my-openai-proxy_${{ github.sha }}_${{ matrix.go-os }}_${{ matrix.go-arch }}
           path: _out
