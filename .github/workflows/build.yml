@@ -24,6 +24,9 @@ jobs:
           go-version-file: "go.mod"
           cache: false
 
+      - name: Set Version
+        run: echo "MY_VERSION=$(git describe --tags)" >> $GITHUB_ENV
+
       - name: Create _out directory
         run: mkdir -p _out
 
@@ -33,5 +36,5 @@ jobs:
       - name: Compress and Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: my-openai-proxy_${{ github.sha }}_${{ matrix.go-os }}_${{ matrix.go-arch }}
+          name: my-openai-proxy_${{ env.MY_VERSION }}_${{ matrix.go-os }}_${{ matrix.go-arch }}
           path: _out
